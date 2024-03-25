@@ -46,34 +46,41 @@ class _OrderListState extends State<OrderList> {
       appBar: AppBarCustom(
         title: "Order",
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15),
-          child: Column(
-              children: List.generate(orderList.length, (index) {
-            return InkWell(
-              onTap: (){
-                context.read<NavigationModel>().pushToPage(OrderDetails(order: orderList[index]));
-              },
-              child: ListTile(
-                title: Text(orderList[index].getCartProductTitles()),
-                trailing: Column(
-                  children: [
-                    Text(
-                      "RM ${priceCalculator(orderList[index].cartProducts)}",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      body: orderList.isEmpty
+          ? Center(
+              child: Text("No order added from cart list"),
+            )
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: Column(
+                    children: List.generate(orderList.length, (index) {
+                  return InkWell(
+                    onTap: () {
+                      context
+                          .read<NavigationModel>()
+                          .pushToPage(OrderDetails(order: orderList[index]));
+                    },
+                    child: ListTile(
+                      title: Text(orderList[index].getCartProductTitles()),
+                      trailing: Column(
+                        children: [
+                          Text(
+                            "RM ${priceCalculator(orderList[index].cartProducts)}",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            orderList[index].deliveryDate,
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ],
+                      ),
                     ),
-                    Text(
-                      orderList[index].deliveryDate,
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ],
-                ),
+                  );
+                })),
               ),
-            );
-          })),
-        ),
-      ),
+            ),
       bottomNavigationBar: BottomBar(),
     );
   }
@@ -86,6 +93,4 @@ class _OrderListState extends State<OrderList> {
     }
     return total.toString();
   }
-
-
 }
